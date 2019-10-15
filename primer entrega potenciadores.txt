@@ -1,0 +1,39 @@
+import pygame,sys
+from pygame.locals import *
+from random import randint
+
+pygame.init()
+ventana=pygame.display.set_mode((1200,600))
+pygame.display.set_caption("Jueguiño")
+
+imageVida= pygame.image.load("vida.jpg")
+vidaRect = imageVida.get_rect()            # <-- Get the Image's Rectangle
+posX= randint(0,1200)
+posY= randint(0,0)
+vidaRect.center = ( posX, posY )           # <-- Position the Rectangle
+
+rectangulo=pygame.Rect(0,550,1200,50)
+transparente=(0,0,0,0)
+velocidad=1
+
+Blanco=(255,255,255)
+
+while True:
+    ventana.fill(Blanco)
+    ventana.blit( imageVida, ( vidaRect.x, vidaRect.y ) )  # <-- Draw at the Rectangle
+    pygame.draw.rect(ventana,(180,70,70),rectangulo)
+
+
+
+    if rectangulo.colliderect( vidaRect ):  # <-- Collide-test the Rectangle
+        velocidad=0
+        print("Collision!")
+
+    for event in pygame.event.get():
+        if event.type == QUIT:
+            pygame.quit()
+            sys.exit()
+
+    if vidaRect.y<1200:
+        vidaRect.y+=velocidad
+    pygame.display.update()
