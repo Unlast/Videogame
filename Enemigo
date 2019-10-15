@@ -1,0 +1,58 @@
+import pygame, sys, os, time
+ANCHO = 640
+ALTO = 480
+ 
+class Enemigo(pygame.sprite.Sprite):
+    def __init__(self,posx,posy):
+        pygame.sprite.Sprite.__init__(self)
+        self.posx = posx
+        self.posy = posy
+        
+        self.enemigo_imagenA  = pygame.image.load(os.path.join('recursos','imagenes','paloma_negra.png'))
+        self.enemigo_imagenB  = pygame.image.load(os.path.join('recursos','imagenes','paloma_blanca.png'))
+        
+        self.listaImagenes = [self.enemigo_imagenA, self.enemigo_imagenB]
+        self.posicionImagen = 0
+    
+        self.imagenEnemigo = self.listaImagenes[self.posicionImagen]
+        self.rect = self.imagenEnemigo.get_rect()
+        
+        self.listaTiro = []
+        self.velocidadTiro = 5
+        self.velocidad = 25
+        self.rect.top = posy
+        self.rect.left = posx
+        
+        self.cambioImagen = 1
+    	
+       
+    	
+    def mostrar(self, superficie):
+        self.imagenEnemigo = self.listaImagenes[self.posicionImagen]
+        superficie.blit(self.imagenEnemigo, self.rect)
+        
+    def animacion(self,tiempo):
+        
+            if  self.posicionImagen>=len(self.listaImagenes)-1:
+                self.posicionImagen = 0
+            else:
+                self.posicionImagen +=1
+    
+
+def juego():
+    pygame.init()
+    pantalle = pygame.display.set_mode((ANCHO,ALTO))
+    ene = Enemigo(100,100)
+    reloj = pygame.time.Clock()
+
+    while True:
+        #Mayor es el tick, mayor es la velocidad de cambio
+        reloj.tick(1)
+        tiempo = pygame.time.get_ticks()/1
+        ene.animacion(tiempo)
+        
+        ene.mostrar(pantalle)
+        
+        pygame.display.update()
+
+juego()
