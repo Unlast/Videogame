@@ -1,0 +1,67 @@
+import pygame,sys
+from pygame.locals import *
+
+ancho = 900
+alto = 400
+
+class naveEspacial(pygame.sprite.Sprite):
+    
+    def __init__(self):
+        
+        pygame.sprite.Sprite.__init__(self)
+        self.ImagenPersonaje = pygame.image.load('Imagenes/personaje.png')
+        self.rect = self.ImagenPersonaje.get_rect()
+        self.rect.centerx = ancho/2
+        self.rect.centery = alto-60
+        self.listaDisparo = []
+        self.Vida = True
+        self.Velocidad = 20
+        
+        
+    def movimiento(self):
+        if self.Vida == True:
+            if self.rect.left <=0:
+                self.rect.left =0
+                
+            elif self.rect.right >870:
+                self.rect.right = 840
+    
+    def disparar(self):
+        print("disparo")
+    
+    def dibujar(self,superficie):
+        superficie.blit(self.ImagenPersonaje,self.rect)
+
+
+def NuevoJuego():
+    pygame.init()
+    venta = pygame.display.set_mode((ancho,alto))
+    pygame.display.set_caption("juego de Nahuel")
+    imagenFondo = pygame.image.load('Imagenes/fondo2.jpg')
+    jugador = naveEspacial()
+    enJuego = True
+
+    while True:
+        
+        jugador.movimiento()
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+                
+            if enJuego == True:
+                if event.type == pygame.KEYDOWN:
+                    if event.key == K_LEFT:
+                        jugador.rect.left -= jugador.Velocidad
+                        
+                    elif event.key == K_RIGHT:
+                        jugador.rect.right += jugador.Velocidad
+                        
+                    elif event.key == K_s:
+                        jugador.disparar()
+                        
+        venta.blit(imagenFondo,(0,0))
+        jugador.dibujar(venta)   
+        pygame.display.update()
+
+NuevoJuego()
