@@ -8,11 +8,10 @@ class Enemigo(pygame.sprite.Sprite):
         self.posx = posx
         self.posy = posy
         
-        self.enemigo_imagenA  = pygame.image.load(os.path.join('recursos','imagenes','izq.png'))
-        self.enemigo_imagenB  = pygame.image.load(os.path.join('recursos','imagenes','dos.png'))
-        self.enemigo_imagenC  = pygame.image.load(os.path.join('recursos','imagenes','der.png'))
+        self.enemigo_imagenA  = pygame.image.load(os.path.join('recursos','imagenes','enemigo001.bmp'))
+        self.enemigo_imagenB  = pygame.image.load(os.path.join('recursos','imagenes','enemigo002.bmp'))
 
-        self.listaImagenes = [self.enemigo_imagenA, self.enemigo_imagenB, self.enemigo_imagenC]
+        self.listaImagenes = [self.enemigo_imagenA, self.enemigo_imagenB]
         self.posicionImagen = 0
     
         self.imagenEnemigo = self.listaImagenes[self.posicionImagen]
@@ -65,18 +64,32 @@ class Enemigo(pygame.sprite.Sprite):
             self.rect.left = self.rect.left - self.velocidad
             if self.rect.left <0:
                 self.derecha = True
-        
+class Armada_enemiga(pygame.sprite.Group):
+    def __init__(self, cantidadLadrillos):
+        pygame.sprite.Group.__init__(self)
+        pos_x  = 0
+        pos_y  = 20
+        for i in range (cantidadLadrillos):
+            ladrillo = Enemigo((pos_x, pos_y))
+            self.add(ladrillo)
+            
+            pos_x+=Enemigo.rect.width
+            if pos_x >= ANCHO:
+                pos_x = 0
+                pos_y += ladrillo.rect.height
+    
 def juego():
     pygame.init()
     pantalle = pygame.display.set_mode((ANCHO,ALTO))
     ene = Enemigo(100,100)
     reloj = pygame.time.Clock()
+    imagenFondo = pygame.image.load(os.path.join('recursos','imagenes','fondo.png'))
     while True:
         #Mayor es el tick, mayor es la velocidad de cambio
         reloj.tick(1)
         tiempo = reloj
         ene.animacion(tiempo)
-        
+        pantalle.blit(imagenFondo,(0,0))
         ene.mostrar(pantalle)
         
         pygame.display.update()
