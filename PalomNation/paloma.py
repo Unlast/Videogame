@@ -1,15 +1,15 @@
 import pygame, sys, os, time
 ANCHO = 640
 ALTO = 480
- 
+LISTA_ENEMIGOS = []
 class Enemigo(pygame.sprite.Sprite):
-    def __init__(self,posx,posy):
+    def __init__(self,posx,posy, distancia, imagenUno, imagenDos):
         pygame.sprite.Sprite.__init__(self)
         self.posx = posx
         self.posy = posy
         
-        self.enemigo_imagenA  = pygame.image.load(os.path.join('recursos','imagenes','enemigo001.bmp'))
-        self.enemigo_imagenB  = pygame.image.load(os.path.join('recursos','imagenes','enemigo002.bmp'))
+        self.enemigo_imagenA  = pygame.image.load(imagenUno)
+        self.enemigo_imagenB  = pygame.image.load(imagenDos)
 
         self.listaImagenes = [self.enemigo_imagenA, self.enemigo_imagenB]
         self.posicionImagen = 0
@@ -28,6 +28,9 @@ class Enemigo(pygame.sprite.Sprite):
         self.derecha = True
         self.contador = 0
         self.maxDescenso = self.rect.top+40
+        
+        self.limiteDer= posx + distancia
+        self.limiteIzq= posx - distancia
     	
     def mostrar(self, superficie):
         self.imagenEnemigo = self.listaImagenes[self.posicionImagen]
@@ -52,46 +55,59 @@ class Enemigo(pygame.sprite.Sprite):
             self.contador =0
             self.maxDescenso = self.rect.top + 40
         else:
-            self.rect.top +=1
+            self.rect.top +=20
    
     def __movimientoLateral(self):
         if self.derecha == True:
             self.rect.left = self.rect.left+ self.velocidad
-            if self.rect.left > 500:
+            if self.rect.left > self.limiteDer:
                 self.derecha = False
                 self.contador +=1
         else:
             self.rect.left = self.rect.left - self.velocidad
-            if self.rect.left <0:
+            if self.rect.left <self.limiteIzq:
                 self.derecha = True
-class Armada_enemiga(pygame.sprite.Group):
-    def __init__(self, cantidadLadrillos):
-        pygame.sprite.Group.__init__(self)
-        pos_x  = 0
-        pos_y  = 20
-        for i in range (cantidadLadrillos):
-            ladrillo = Enemigo((pos_x, pos_y))
-            self.add(ladrillo)
-            
-            pos_x+=Enemigo.rect.width
-            if pos_x >= ANCHO:
-                pos_x = 0
-                pos_y += ladrillo.rect.height
+                
+def cargarEnemigos():
+   
+    posx = 50
+    for x in range(1,6):
+        armada = Enemigo(posx,150,40, 'recursos/imagenes/enemigo001.bmp', 'recursos/imagenes/enemigo002.bmp') #Segundo valor distancia en y
+        LISTA_ENEMIGOS.append(armada)
+        posx = posx + 50 
+   
+    
+    posx = 100
+    for x in range(1,4):
+        armada = Enemigo(posx,100,80, 'recursos/imagenes/enemigo001.bmp', 'recursos/imagenes/enemigo002.bmp')
+        LISTA_ENEMIGOS.append(armada)
+        posx = posx + 75
+   
+    
+    posx = 175 #Desplazamiento en x
+    for x in range(1,2):
+        armada = Enemigo(posx,50,120, 'recursos/imagenes/enemigo001.bmp', 'recursos/imagenes/enemigo002.bmp') #Segundo valor distancia en y
+        LISTA_ENEMIGOS.append(armada)
+        posx = posx + 50
     
 def juego():
     pygame.init()
     pantalle = pygame.display.set_mode((ANCHO,ALTO))
-    ene = Enemigo(100,100)
+    cargarEnemigos()
     reloj = pygame.time.Clock()
     imagenFondo = pygame.image.load(os.path.join('recursos','imagenes','fondo.png'))
+    
     while True:
         #Mayor es el tick, mayor es la velocidad de cambio
-        reloj.tick(1)
+        reloj.tick(30)
         tiempo = reloj
-        ene.animacion(tiempo)
         pantalle.blit(imagenFondo,(0,0))
-        ene.mostrar(pantalle)
         
+        for armada in LISTA_ENEMIGOS:
+            armada.animacion(tiempo)
+            armada.mostrar(pantalle)
+        
+           
         pygame.display.update()
 
 juego()
