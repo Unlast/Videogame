@@ -1,6 +1,8 @@
 import pygame, sys, os, time
-ANCHO = 640
-ALTO = 480
+from pygame.locals import *
+
+ANCHO = 800
+ALTO = 600
 LISTA_ENEMIGOS = []
 class Enemigo(pygame.sprite.Sprite):
     def __init__(self,posx,posy, distancia, imagenUno, imagenDos):
@@ -19,7 +21,7 @@ class Enemigo(pygame.sprite.Sprite):
         
         self.listaTiro = []
         self.velocidadTiro = 5
-        self.velocidad = 25
+        self.velocidad = 50
         self.rect.top = posy
         self.rect.left = posx
         
@@ -70,21 +72,21 @@ class Enemigo(pygame.sprite.Sprite):
                 
 def cargarEnemigos():
    
-    posx = 50
+    posx = 350
     for x in range(1,6):
         armada = Enemigo(posx,150,40, 'recursos/imagenes/enemigo001.bmp', 'recursos/imagenes/enemigo002.bmp') #Segundo valor distancia en y
         LISTA_ENEMIGOS.append(armada)
         posx = posx + 50 
    
     
-    posx = 100
+    posx = 300
     for x in range(1,4):
         armada = Enemigo(posx,100,80, 'recursos/imagenes/enemigo001.bmp', 'recursos/imagenes/enemigo002.bmp')
         LISTA_ENEMIGOS.append(armada)
         posx = posx + 75
    
     
-    posx = 175 #Desplazamiento en x
+    posx = 600 #Desplazamiento en x
     for x in range(1,2):
         armada = Enemigo(posx,50,120, 'recursos/imagenes/enemigo001.bmp', 'recursos/imagenes/enemigo002.bmp') #Segundo valor distancia en y
         LISTA_ENEMIGOS.append(armada)
@@ -99,7 +101,7 @@ def juego():
     
     while True:
         #Mayor es el tick, mayor es la velocidad de cambio
-        reloj.tick(30)
+        reloj.tick(1)
         tiempo = reloj
         pantalle.blit(imagenFondo,(0,0))
         
@@ -107,7 +109,10 @@ def juego():
             armada.animacion(tiempo)
             armada.mostrar(pantalle)
         
-           
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                pygame.quit()
+                sys.exit()
         pygame.display.update()
 
 juego()
