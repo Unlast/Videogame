@@ -4,12 +4,19 @@ sys.path.append("/NAC/Desktop/PalomNation/Clases") #Agregar la ubicacion donde t
 print(sys.path)
 from Clases import NaveEspacial
 from Clases import Alien as Enemigo
+from Clases import Proyectil
 
 ANCHO = 640
 ALTO = 480
 LISTA_ENEMIGOS = []
 blanco = 0,0,0
 
+def detener():
+    for armada in LISTA_ENEMIGOS:
+        for disparo in armada.listaTiro:
+            armada.listaTiro.remove(disparo)
+        armada.conquista = True 
+        
 def cargarEnemigos():
    
     posx = 200
@@ -42,7 +49,9 @@ def NuevoJuego():
     imagenFondo = pygame.image.load(os.path.join('recursos','imagenes','fondo.png'))
     enJuego = True
     pygame.key.set_repeat(10)
-
+    fuente = pygame.font.SysFont("Arial",30)
+    texto = fuente.render("Game Over",0,(120,100,40))
+    
     while True:
         #Mayor es el tick, mayor es la velocidad de cambio
         reloj.tick(30)
@@ -65,16 +74,56 @@ def NuevoJuego():
                             
                         
                     elif event.key == K_s:
-                        jugador.disparar()
+                        x,y = jugador.rect.center
+                        jugador.disparar(x,y)
+        
+        pantalle.blit(imagenFondo,(0,0))
         jugador.dibujar(pantalle)
-        for armada in LISTA_ENEMIGOS:
-            armada.animacion(tiempo)
-            armada.mostrar(pantalle)
         
         for event in pygame.event.get():
             if event.type == QUIT:
                 pygame.quit()
                 sys.exit()
+        
+        if len(jugador.listaDisparo)>0:
+            for x in jugador.listaDisparo:
+                x.dibujar(pantalle)
+                x.trayectoria()
+                
+            if x.rect.top<-10:
+                jugador.listaDisparo.remove(x)
+            else:    
+                for armada in LISTA_ENEMIGOS:
+                    if x.rect.colliderect(armada.rect):
+                        LISTA_ENEMIGOS.remove(armada)
+                        jugador.listaDisparo.remove(x)
+    
+        if len(LISTA_ENEMIGOS)>0:
+            for armada in LISTA_ENEMIGOS:
+                armada.animacion(tiempo)
+                armada.mostrar(pantalle)
+                
+                if armada.rect.colliderect(jugador.rect):
+                    enJuego = False
+                    detener()
+                
+                if len(armada.listaTiro)>0:
+                    for x in armada.listaTiro:
+                        x.dibujar(pantalle)
+                        x.trayectoria()
+                        if armada.rect.colliderect(jugador.rect):
+                            enJuego = False
+                            detener()
+                        
+                        if x.rect.top>900:
+                            armada.listaTiro.remove(x)
+                        else:
+                            for disparo in jugador.listaDisparo:
+                                if x.rect.colliderect(disparo.rect):
+                                    jugador.listaDisparo.remove(disparo)
+                                    armada.listaTiro.remove(x)
+        if enJuego == False:
+            pantalle.blit(texto,(300,300))
         pygame.display.update()
 
 
