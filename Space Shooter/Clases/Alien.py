@@ -1,5 +1,7 @@
 import pygame
 from pygame.locals import *
+from Clases import Proyectil
+from random import randint
 
 class nave_enemiga(pygame.sprite.Sprite):
     def __init__(self,posx,posy, distancia, imagenUno, imagenDos):
@@ -17,7 +19,7 @@ class nave_enemiga(pygame.sprite.Sprite):
         self.rect = self.imagenEnemigo.get_rect()
         
         self.listaTiro = []
-        self.velocidadTiro = 5
+        self.velocidadTiro = 1
         self.velocidad = 1
         self.rect.top = posy
         self.rect.left = posx
@@ -31,17 +33,24 @@ class nave_enemiga(pygame.sprite.Sprite):
         self.limiteDer= posx + distancia
         self.limiteIzq= posx - distancia
     	
+        self.rangoDisparo = 2
+        self.conquista = False 
+        
     def mostrar(self, superficie):
         self.imagenEnemigo = self.listaImagenes[self.posicionImagen]
         superficie.blit(self.imagenEnemigo, self.rect)
         
     def animacion(self,tiempo):
-        self.__movimientos()
         
-        if  self.posicionImagen>=len(self.listaImagenes)-1:
-            self.posicionImagen = 0
-        else:
-            self.posicionImagen +=1
+        if self.conquista == False:
+            self.__movimientos()
+
+            self.__ataque()
+    
+            if  self.posicionImagen>=len(self.listaImagenes)-1:
+                self.posicionImagen = 0
+            else:
+                self.posicionImagen +=1
     
     def __movimientos(self):
         if self.contador <3:
@@ -66,4 +75,12 @@ class nave_enemiga(pygame.sprite.Sprite):
             self.rect.left = self.rect.left - self.velocidad
             if self.rect.left <self.limiteIzq:
                 self.derecha = True
+                
+    def __ataque(self):
+        if (randint(0,100)<self.rangoDisparo):
+            self.__disparo()
 
+    def __disparo(self):
+        x,y = self.rect.center
+        miProyectil = Proyectil.Proyectil(x,y,'recursos/imagenes/tiro2.bmp',False)
+        self.listaTiro.append(miProyectil)
