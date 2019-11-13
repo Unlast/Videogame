@@ -28,7 +28,7 @@ class nave(pygame.sprite.Sprite):
         miProyectil = Proyectil.Proyectil(x,y,'recursos/imagenes/tiro.bmp',True)
         self.listaDisparo.append(miProyectil)
         
-    def destruccion():
+    def destruccion(self):
         self.Vida = False
         self.velocidad = 0
         self.ImagenPersonaje = self.ImagenExplosion
