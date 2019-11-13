@@ -88,15 +88,14 @@ def NuevoJuego():
         if len(jugador.listaDisparo)>0:
             for x in jugador.listaDisparo:
                 x.dibujar(pantalle)
-                x.trayectoria()
-                
-            if x.rect.top<-10:
-                jugador.listaDisparo.remove(x)
-            else:    
-                for armada in LISTA_ENEMIGOS:
-                    if x.rect.colliderect(armada.rect):
-                        LISTA_ENEMIGOS.remove(armada)
-                        jugador.listaDisparo.remove(x)
+                x.trayectoria()  
+                if x.rect.top<-10:
+                    jugador.listaDisparo.remove(x)
+                else:    
+                    for armada in LISTA_ENEMIGOS:
+                        if x.rect.colliderect(armada.rect):
+                            LISTA_ENEMIGOS.remove(armada)
+                            jugador.listaDisparo.remove(x)
     
         if len(LISTA_ENEMIGOS)>0:
             for armada in LISTA_ENEMIGOS:
@@ -104,6 +103,7 @@ def NuevoJuego():
                 armada.mostrar(pantalle)
                 
                 if armada.rect.colliderect(jugador.rect):
+                    jugador.destruccion()
                     enJuego = False
                     detener()
                 
@@ -111,7 +111,8 @@ def NuevoJuego():
                     for x in armada.listaTiro:
                         x.dibujar(pantalle)
                         x.trayectoria()
-                        if armada.rect.colliderect(jugador.rect):
+                        if x.rect.colliderect(jugador.rect):
+                            jugador.destruccion()
                             enJuego = False
                             detener()
                         
@@ -122,6 +123,8 @@ def NuevoJuego():
                                 if x.rect.colliderect(disparo.rect):
                                     jugador.listaDisparo.remove(disparo)
                                     armada.listaTiro.remove(x)
+    
+            
         if enJuego == False:
             pantalle.blit(texto,(300,300))
         pygame.display.update()
