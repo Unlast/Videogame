@@ -19,7 +19,7 @@ class nave_enemiga(pygame.sprite.Sprite):
         self.rect = self.imagenEnemigo.get_rect()
         
         self.listaTiro = []
-        self.velocidadTiro = 1
+        self.velocidadTiro = 450
         self.velocidad = 1
         self.rect.top = posy
         self.rect.left = posx
@@ -33,7 +33,7 @@ class nave_enemiga(pygame.sprite.Sprite):
         self.limiteDer= posx + distancia
         self.limiteIzq= posx - distancia
     	
-        self.rangoDisparo = 2
+        self.rangoDisparo = 1
         self.conquista = False 
         
     def mostrar(self, superficie):
@@ -77,7 +77,7 @@ class nave_enemiga(pygame.sprite.Sprite):
                 self.derecha = True
                 
     def __ataque(self):
-        if (randint(0,100)<self.rangoDisparo):
+        if (randint(0,600)<self.rangoDisparo):
             self.__disparo()
 
     def __disparo(self):
