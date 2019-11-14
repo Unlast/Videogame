@@ -1,17 +1,17 @@
 import pygame,sys, os, time
 from pygame.locals import *
 sys.path.append("/NAC/Desktop/PalomNation/Clases") #Agregar la ubicacion donde tengan las carpetas
-print(sys.path)
 from Clases import NaveEspacial
 from Clases import Alien as Enemigo
 from Clases import Proyectil
 
-ANCHO = 640
-ALTO = 480
+ANCHO = 360
+ALTO = 740
 LISTA_ENEMIGOS = []
-blanco = 0,0,0
 
-def detener():
+NEGRO = (0, 0, 0)
+
+def detenerEnemigo():
     for armada in LISTA_ENEMIGOS:
         for disparo in armada.listaTiro:
             armada.listaTiro.remove(disparo)
@@ -19,21 +19,21 @@ def detener():
         
 def cargarEnemigos():
    
-    posx = 200
+    posx = 45
     for x in range(1,6):
         armada = Enemigo.nave_enemiga(posx,150,40, 'recursos/imagenes/enemigo001.bmp', 'recursos/imagenes/enemigo002.bmp') #Segundo valor distancia en y
         LISTA_ENEMIGOS.append(armada)
         posx = posx + 50 
    
     
-    posx = 300
+    posx = 90
     for x in range(1,4):
         armada = Enemigo.nave_enemiga(posx,100,80, 'recursos/imagenes/enemigo001.bmp', 'recursos/imagenes/enemigo002.bmp')
         LISTA_ENEMIGOS.append(armada)
         posx = posx + 75
    
     
-    posx = 400 #Desplazamiento en x
+    posx = 180 #Desplazamiento en x
     for x in range(1,2):
         armada = Enemigo.nave_enemiga(posx,50,120, 'recursos/imagenes/enemigo001.bmp', 'recursos/imagenes/enemigo002.bmp') #Segundo valor distancia en y
         LISTA_ENEMIGOS.append(armada)
@@ -50,11 +50,15 @@ def NuevoJuego():
     enJuego = True
     pygame.key.set_repeat(10)
     fuente = pygame.font.SysFont("Arial",30)
-    texto = fuente.render("Game Over",0,(120,100,40))
+    textoVictoria = fuente.render("Todavía hay maaas",45,(120,100,40))
+    texto = fuente.render("Game Over",75,(120,100,40))
+    pygame.mixer.music.load('recursos/audio/marcha.mp3')
+    pygame.mixer.music.play(2)
+    pantalle.fill(NEGRO)
     
     while True:
         #Mayor es el tick, mayor es la velocidad de cambio
-        reloj.tick(30)
+        reloj.tick(60)
         tiempo = reloj
         pantalle.blit(imagenFondo,(0,0))
         jugador.movimiento()
@@ -96,7 +100,8 @@ def NuevoJuego():
                         if x.rect.colliderect(armada.rect):
                             LISTA_ENEMIGOS.remove(armada)
                             jugador.listaDisparo.remove(x)
-    
+                            
+                            
         if len(LISTA_ENEMIGOS)>0:
             for armada in LISTA_ENEMIGOS:
                 armada.animacion(tiempo)
@@ -114,7 +119,7 @@ def NuevoJuego():
                         if x.rect.colliderect(jugador.rect):
                             jugador.destruccion()
                             enJuego = False
-                            detener()
+                            detenerEnemigo()
                         
                         if x.rect.top>900:
                             armada.listaTiro.remove(x)
@@ -126,8 +131,12 @@ def NuevoJuego():
     
             
         if enJuego == False:
-            pantalle.blit(texto,(300,300))
+            pantalle.blit(texto,(ANCHO/2,300))
+
+        if len(LISTA_ENEMIGOS) == 0:
+            jugador.ganar()
+            pantalle.blit(textoVictoria,(75,300))
+
         pygame.display.update()
-
-
+        
 NuevoJuego()
