@@ -1,8 +1,9 @@
-import pygame
+import pygame, os
 from pygame.locals import *
 from Clases import Proyectil
-ANCHO = 640
-ALTO = 480
+ANCHO = 360
+ALTO = 740
+
 class nave(pygame.sprite.Sprite):
     
     def __init__(self):
@@ -16,6 +17,10 @@ class nave(pygame.sprite.Sprite):
         self.Vida = True
         self.Velocidad = 2
         self.ImagenExplosion = pygame.image.load('recursos/imagenes/explosion.bmp')
+        self.sonidoDisparo = pygame.mixer.Sound('recursos/audio/disparo2.ogg')
+        self.sonidoDestruccion = pygame.mixer.Sound('recursos/audio/explosion1.ogg')
+        self.victoria = False
+        
     def movimiento(self):
         if self.Vida == True:
             if self.rect.left <=0:
@@ -27,13 +32,19 @@ class nave(pygame.sprite.Sprite):
     def disparar(self,x,y):
         miProyectil = Proyectil.Proyectil(x,y,'recursos/imagenes/tiro.bmp',True)
         self.listaDisparo.append(miProyectil)
+        self.sonidoDisparo.play()
         
     def destruccion(self):
         self.Vida = False
         self.velocidad = 0
         self.ImagenPersonaje = self.ImagenExplosion
+        self.sonidoDestruccion.play()
         
     def dibujar(self,superficie):
         superficie.blit(self.ImagenPersonaje,self.rect)
-blanco = (0,0,0)
+        
+    def ganar(self):
+        for x in self.listaDisparo:
+            self.listaDisparo.remove(x)
+            pygame.mixer.pause()
 
