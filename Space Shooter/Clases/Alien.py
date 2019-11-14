@@ -1,4 +1,4 @@
-import pygame
+import pygame,os
 from pygame.locals import *
 from Clases import Proyectil
 from random import randint
@@ -6,6 +6,7 @@ from random import randint
 class nave_enemiga(pygame.sprite.Sprite):
     def __init__(self,posx,posy, distancia, imagenUno, imagenDos):
         pygame.sprite.Sprite.__init__(self)
+
         self.posx = posx
         self.posy = posy
         
@@ -35,6 +36,8 @@ class nave_enemiga(pygame.sprite.Sprite):
     	
         self.rangoDisparo = 1
         self.conquista = False 
+
+        self.sonidoDisparo = pygame.mixer.Sound('recursos/audio/disparo1.ogg')
         
     def mostrar(self, superficie):
         self.imagenEnemigo = self.listaImagenes[self.posicionImagen]
@@ -84,3 +87,4 @@ class nave_enemiga(pygame.sprite.Sprite):
         x,y = self.rect.center
         miProyectil = Proyectil.Proyectil(x,y,'recursos/imagenes/tiro2.bmp',False)
         self.listaTiro.append(miProyectil)
+        self.sonidoDisparo.play()
