@@ -26,8 +26,8 @@ class nave(pygame.sprite.Sprite):
             if self.rect.left <=0:
                 self.rect.left =0
                 
-            elif self.rect.right >=900:
-                self.rect.right = 900
+            elif self.rect.right >=360:
+                self.rect.right = 360
     
     def disparar(self,x,y):
         miProyectil = Proyectil.Proyectil(x,y,'recursos/imagenes/tiro.bmp',True)
@@ -46,5 +46,4 @@ class nave(pygame.sprite.Sprite):
     def ganar(self):
         for x in self.listaDisparo:
             self.listaDisparo.remove(x)
-            pygame.mixer.pause()
-
+            
