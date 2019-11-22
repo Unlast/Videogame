@@ -3,6 +3,9 @@ from pygame.locals import *
 from Clases import Proyectil
 from random import randint
 
+ANCHO = 360
+ALTO = 740
+LISTA_ENEMIGOS=[]
 class nave_enemiga(pygame.sprite.Sprite):
     def __init__(self,posx,posy, distancia, imagenUno, imagenDos):
         pygame.sprite.Sprite.__init__(self)
@@ -18,7 +21,6 @@ class nave_enemiga(pygame.sprite.Sprite):
     
         self.imagenEnemigo = self.listaImagenes[self.posicionImagen]
         self.rect = self.imagenEnemigo.get_rect()
-        
         self.listaTiro = []
         self.velocidadTiro = 450
         self.velocidad = 1
@@ -88,3 +90,4 @@ class nave_enemiga(pygame.sprite.Sprite):
         miProyectil = Proyectil.Proyectil(x,y,'recursos/imagenes/tiro2.bmp',False)
         self.listaTiro.append(miProyectil)
         self.sonidoDisparo.play()
+ 
