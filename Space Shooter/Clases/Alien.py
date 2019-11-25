@@ -95,40 +95,32 @@ class nave_enemiga(pygame.sprite.Sprite):
 
 class jefe_enemigo(nave_enemiga):
     def __init__(self,posx,posy, distancia, imagenUno, imagenDos):
-        self.posx = posx
-        self.posy = posy
+        super(nave_enemiga, self)
+        
         self.imagenA = pygame.image.load(imagenUno)
         self.imagenB = pygame.image.load(imagenDos)
         self.listaImagenes = [self.imagenA, self.imagenB]
-
         self.distancia = distancia
         self.posicionImagen = 0
         self.imagenEnemigo = self.listaImagenes[self.posicionImagen]
-
         self.colision = 0
         self.vivo = True
         self.rect = self.imagenEnemigo.get_rect()
         self.sonidoDisparo = pygame.mixer.Sound('recursos/audio/pium.wav')
-    
         self.listaTiro = []
         self.velocidadTiro = 450
         self.velocidad = 1
         self.rect.top = posy
         self.rect.left = posx
-        
         self.cambioImagen = 1
-    	
         self.derecha = True
         self.contador = 0
         self.maxDescenso = self.rect.top+40
-        
         self.limiteDer= posx + distancia
         self.limiteIzq= posx - distancia
-    	
         self.rangoDisparo = 1
         self.conquista = False 
 
-        self.conquista = False
     def mostrar(self, superficie):
         nave_enemiga.mostrar(self,superficie)
     

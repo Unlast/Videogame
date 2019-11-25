@@ -11,6 +11,7 @@ class Proyectil(pygame.sprite.Sprite):
         self.rect.left = posx
         
         self.disparoPersonaje = personaje
+    
     def trayectoria(self):
         if self.disparoPersonaje == True:
             self.rect.top = self.rect.top - self.velocidadDisparo
