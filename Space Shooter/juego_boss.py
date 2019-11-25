@@ -109,8 +109,12 @@ def NuevoJuego():
                 else:    
                     for armada in LISTA_ENEMIGOS:
                         if x.rect.colliderect(armada.rect):
-                            LISTA_ENEMIGOS.remove(armada)
                             jugador.listaDisparo.remove(x)
+                            armada.colision +=1
+                            if armada.colision > 9:
+                                LISTA_ENEMIGOS.remove(armada)
+
+                                
                             
         if len(LISTA_ENEMIGOS)>0:
             for armada in LISTA_ENEMIGOS:
