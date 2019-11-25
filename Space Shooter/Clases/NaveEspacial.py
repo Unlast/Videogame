@@ -20,6 +20,7 @@ class nave(pygame.sprite.Sprite):
         self.sonidoDisparo = pygame.mixer.Sound('recursos/audio/disparo2.ogg')
         self.sonidoDestruccion = pygame.mixer.Sound('recursos/audio/explosion1.ogg')
         self.victoria = False
+        self.disparo = False
         
     def movimiento(self):
         if self.Vida == True:
@@ -33,7 +34,7 @@ class nave(pygame.sprite.Sprite):
         miProyectil = Proyectil.Proyectil(x,y,'recursos/imagenes/tiro.bmp',True)
         self.listaDisparo.append(miProyectil)
         self.sonidoDisparo.play()
-        
+   
     def destruccion(self):
         self.Vida = False
         self.velocidad = 0
