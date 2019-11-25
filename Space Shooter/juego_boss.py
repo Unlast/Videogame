@@ -7,36 +7,13 @@ from Clases import Proyectil
 from Clases import Menu
 from Clases import Opcion
 from Clases import Cursor
+from Clases import Niveles
 
 ANCHO = 360
 ALTO = 740
 LISTA_ENEMIGOS = []
-
 NEGRO = (0, 0, 0)
-def cargarEnemigos():
-       #posx ubicacion inicial sobre el eje x se le suma 50 para que no queden las imagenes superpuestas
-       #el segundo valor es la posicion sobre el eje y 
-       #el tercer espacio es la distancia que recorre sobre el eje x
-        posx = 45
-        for x in range(1,6):
-            armada = Enemigo.jefe_enemigo(posx,150,40, 'recursos/imagenes/enemigo003.bmp', 'recursos/imagenes/enemigo004.bmp') #Segundo valor distancia en y
-            LISTA_ENEMIGOS.append(armada)
-            posx = posx + 50 
-       
-        
-        posx = 90
-        for x in range(1,4):
-            armada = Enemigo.jefe_enemigo(posx,100,80, 'recursos/imagenes/enemigo003.bmp', 'recursos/imagenes/enemigo004.bmp') #Segundo valor distancia en y
-            LISTA_ENEMIGOS.append(armada)
-            posx = posx + 75
-       
-        
-        posx = 180 #Desplazamiento en x
-        for x in range(1,2):
-            armada = Enemigo.jefe_enemigo(posx,50,120, 'recursos/imagenes/enemigo003.bmp', 'recursos/imagenes/enemigo004.bmp') #Segundo valor distancia en y
-            LISTA_ENEMIGOS.append(armada)
-            posx = posx + 50
-            
+
 def detenerEnemigo():
     for armada in LISTA_ENEMIGOS:
         for disparo in armada.listaTiro:
@@ -57,12 +34,11 @@ def NuevoJuego():
     pygame.mixer.music.load('recursos/audio/menu.mp3')
     pygame.mixer.music.play(4)
     
-    cargarEnemigos()
+    Niveles.cargarBoss(LISTA_ENEMIGOS)
     jugador = NaveEspacial.nave()
     pygame.key.set_repeat(1)
     reloj = pygame.time.Clock()
     juego = True
-    
    
     ventana.fill(NEGRO)
     
@@ -90,7 +66,11 @@ def NuevoJuego():
                         
                     elif event.key == K_s:
                         x,y = jugador.rect.center
-                        jugador.disparar(x,y)
+                        if jugador.disparo == False:
+                            jugador.disparar(x,y)
+                        if jugador.disparo == True:
+                            jugador.disparo(x,y)
+                        
         
         ventana.blit(imagenFondo,(0,0))
         jugador.dibujar(ventana)
