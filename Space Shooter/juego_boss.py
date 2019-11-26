@@ -23,16 +23,14 @@ def NuevoJuego():
     fuente = pygame.font.Font("recursos/fuentes//monolight.ttf", 30)
     textoVictoria = fuente.render("Todavía hay maaas",45,(120,100,40))
     textoDerrota = fuente.render("Game Over",75,(254,0,227))
-    
     pygame.mixer.music.load('recursos/audio/menu.mp3')
     pygame.mixer.music.play(4)
     
-    Niveles.cargarBoss(LISTA_ENEMIGOS)
+    Niveles.cargarEnemigos(LISTA_ENEMIGOS)
     jugador = NaveEspacial.nave()
     pygame.key.set_repeat(1)
     reloj = pygame.time.Clock()
     juego = True
-   
     ventana.fill(NEGRO)
     
     while True:
@@ -62,13 +60,21 @@ def NuevoJuego():
         ventana.blit(imagenFondo,(0,0))
         jugador.dibujar(ventana)
         
-        jugador.colisionJ(LISTA_ENEMIGOS,ventana,Enemigo.jefe_enemigo)
-        Enemigo.jefe_enemigo.colisionBoss(LISTA_ENEMIGOS, tiempo,ventana,jugador, ALTO, ANCHO, textoDerrota)
+        jugador.colision(LISTA_ENEMIGOS,ventana,Enemigo.nave_enemiga,3)
+        Enemigo.nave_enemiga.colision(LISTA_ENEMIGOS, tiempo,ventana,jugador, ALTO, ANCHO, textoDerrota)
         
         if jugador.Vida == False:
             ventana.blit(textoDerrota,(ANCHO/2,ALTO/5))
             
-        if len(LISTA_ENEMIGOS) == 0 and jugador.Vida == True:
+        if len(LISTA_ENEMIGOS) == 0 and jugador.Vida == True and jugador.nivel == False:
+            time.sleep(3)
+            jugador.nivel = True
+            Niveles.cargarBoss(LISTA_ENEMIGOS)
+            jugador.colision(LISTA_ENEMIGOS,ventana,Enemigo.nave_enemiga,9)
+            Enemigo.nave_enemiga.colision(LISTA_ENEMIGOS, tiempo,ventana,jugador, ALTO, ANCHO, textoDerrota)
+            if len(LISTA_ENEMIGOS) == 0 and jugador.Vida == True and jugador.nivel2 == False:
+                jugador.nivel2 = True
+        if jugador.nivel == True and jugador.nivel2 == True:
             jugador.ganar()
             ventana.blit(textoVictoria,(75,300))
         pygame.display.update()
