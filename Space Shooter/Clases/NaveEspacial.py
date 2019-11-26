@@ -1,5 +1,6 @@
 import pygame, os
 from pygame.locals import *
+from Clases import Alien as Enemigo
 from Clases import Proyectil
 ANCHO = 360
 ALTO = 740
@@ -21,6 +22,7 @@ class nave(pygame.sprite.Sprite):
         self.sonidoDestruccion = pygame.mixer.Sound('recursos/audio/explosion1.ogg')
         self.victoria = False
         self.disparo = False
+        self.nivel = False
         
     def movimiento(self):
         if self.Vida == True:
@@ -48,3 +50,20 @@ class nave(pygame.sprite.Sprite):
         for x in self.listaDisparo:
             self.listaDisparo.remove(x)
             
+    def colisionJ(self,lista,superficie,armada):
+        if len(self.listaDisparo)>0:
+            for x in self.listaDisparo:
+                x.dibujar(superficie)
+                x.trayectoria()
+                if x.rect.top<-10:
+                    self.listaDisparo.remove(x)
+                else:
+                    for armada in lista:
+                        if x.rect.colliderect(armada.rect):
+                            self.listaDisparo.remove(x)
+                            armada.colision+=1
+                            if armada.colision > 9:
+                                lista.remove(armada)
+    
+            
+        

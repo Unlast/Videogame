@@ -3,7 +3,7 @@ from pygame.locals import *
 from Clases import Proyectil
 from random import randint
 from Clases import NaveEspacial
-
+juego = True
 ANCHO = 360
 ALTO = 740
 LISTA_ENEMIGOS=[]
@@ -144,7 +144,41 @@ class jefe_enemigo(nave_enemiga):
         miProyectil = Proyectil.Proyectil(x,y,'recursos/imagenes/Proyectil.png',False)
         self.listaTiro.append(miProyectil)
         self.sonidoDisparo.play()
-    
-    
+        
+    def detenerEnemigo(self,lista):
+        for armada in lista:
+            for disparo in armada.listaTiro:
+                armada.listaTiro.remove(disparo)
+            armada.conquista = True 
             
+    def colisionBoss(lista, tiempo, superficie, jugador, altura, ancho, texto):
+        for armada in lista:
+            armada.animacion(tiempo)
+            armada.mostrar(superficie)
+            if armada.rect.colliderect(jugador.rect):
+                jugador.destruccion()
+                lista.remove(armada)
+                juego = False
+                armada.detenerEnemigo(lista)
+            if armada.rect.top > altura-20:
+                jugador.destruccion()
+                jugador.Vida = False
+                armada.detenerEnemigo(lista)    
             
+            if len(armada.listaTiro)>0:
+                    for x in armada.listaTiro:
+                        x.dibujar(superficie)
+                        x.trayectoria()
+                        if x.rect.colliderect(jugador.rect):
+                            jugador.destruccion()
+                            armada.detenerEnemigo(lista)
+                            for disparo in jugador.listaDisparo:
+                                jugador.listaDisparo.remove(disparo)
+                        if x.rect.top>900:
+                            armada.listaTiro.remove(x)
+                        else:
+                            for disparo in jugador.listaDisparo:
+                                if x.rect.colliderect(disparo.rect):
+                                    jugador.listaDisparo.remove(disparo)
+                                    armada.listaTiro.remove(x)
+           
