@@ -23,7 +23,7 @@ class nave(pygame.sprite.Sprite):
         self.victoria = False
         self.disparo = False
         self.nivel = False
-        
+        self.nivel2 = False
     def movimiento(self):
         if self.Vida == True:
             if self.rect.left <=0:
@@ -50,7 +50,7 @@ class nave(pygame.sprite.Sprite):
         for x in self.listaDisparo:
             self.listaDisparo.remove(x)
             
-    def colisionJ(self,lista,superficie,armada):
+    def colision(self,lista,superficie,armada,fin):
         if len(self.listaDisparo)>0:
             for x in self.listaDisparo:
                 x.dibujar(superficie)
@@ -62,7 +62,7 @@ class nave(pygame.sprite.Sprite):
                         if x.rect.colliderect(armada.rect):
                             self.listaDisparo.remove(x)
                             armada.colision+=1
-                            if armada.colision > 9:
+                            if armada.colision > fin:
                                 lista.remove(armada)
     
             

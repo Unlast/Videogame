@@ -7,7 +7,7 @@ juego = True
 ANCHO = 360
 ALTO = 740
 LISTA_ENEMIGOS=[]
-class nave_enemiga(pygame.sprite.Sprite):
+class nave_enemiga(object):
     def __init__(self,posx,posy, distancia, imagenUno, imagenDos):
         pygame.sprite.Sprite.__init__(self)
 
@@ -27,7 +27,7 @@ class nave_enemiga(pygame.sprite.Sprite):
         self.velocidad = 1
         self.rect.top = posy
         self.rect.left = posx
-        
+        self.colision = 0
         self.cambioImagen = 1
     	
         self.derecha = True
@@ -92,6 +92,36 @@ class nave_enemiga(pygame.sprite.Sprite):
         self.listaTiro.append(miProyectil)
         self.sonidoDisparo.play()
  
+    def colision(lista, tiempo, superficie, jugador, altura, ancho, texto):
+        for armada in lista:
+            armada.animacion(tiempo)
+            armada.mostrar(superficie)
+            if armada.rect.colliderect(jugador.rect):
+                jugador.destruccion()
+                lista.remove(armada)
+                juego = False
+                armada.detenerEnemigo(lista)
+            if armada.rect.top > altura-20:
+                jugador.destruccion()
+                jugador.Vida = False
+                armada.detenerEnemigo(lista)    
+            
+            if len(armada.listaTiro)>0:
+                    for x in armada.listaTiro:
+                        x.dibujar(superficie)
+                        x.trayectoria()
+                        if x.rect.colliderect(jugador.rect):
+                            jugador.destruccion()
+                            armada.detenerEnemigo(lista)
+                            for disparo in jugador.listaDisparo:
+                                jugador.listaDisparo.remove(disparo)
+                        if x.rect.top>900:
+                            armada.listaTiro.remove(x)
+                        else:
+                            for disparo in jugador.listaDisparo:
+                                if x.rect.colliderect(disparo.rect):
+                                    jugador.listaDisparo.remove(disparo)
+                                    armada.listaTiro.remove(x)
 
 class jefe_enemigo(nave_enemiga):
     def __init__(self,posx,posy, distancia, imagenUno, imagenDos):
@@ -151,34 +181,5 @@ class jefe_enemigo(nave_enemiga):
                 armada.listaTiro.remove(disparo)
             armada.conquista = True 
             
-    def colisionBoss(lista, tiempo, superficie, jugador, altura, ancho, texto):
-        for armada in lista:
-            armada.animacion(tiempo)
-            armada.mostrar(superficie)
-            if armada.rect.colliderect(jugador.rect):
-                jugador.destruccion()
-                lista.remove(armada)
-                juego = False
-                armada.detenerEnemigo(lista)
-            if armada.rect.top > altura-20:
-                jugador.destruccion()
-                jugador.Vida = False
-                armada.detenerEnemigo(lista)    
-            
-            if len(armada.listaTiro)>0:
-                    for x in armada.listaTiro:
-                        x.dibujar(superficie)
-                        x.trayectoria()
-                        if x.rect.colliderect(jugador.rect):
-                            jugador.destruccion()
-                            armada.detenerEnemigo(lista)
-                            for disparo in jugador.listaDisparo:
-                                jugador.listaDisparo.remove(disparo)
-                        if x.rect.top>900:
-                            armada.listaTiro.remove(x)
-                        else:
-                            for disparo in jugador.listaDisparo:
-                                if x.rect.colliderect(disparo.rect):
-                                    jugador.listaDisparo.remove(disparo)
-                                    armada.listaTiro.remove(x)
-           
+    
+    
