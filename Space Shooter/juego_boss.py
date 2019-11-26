@@ -14,13 +14,6 @@ ALTO = 740
 LISTA_ENEMIGOS = []
 NEGRO = (0, 0, 0)
 
-def detenerEnemigo():
-    for armada in LISTA_ENEMIGOS:
-        for disparo in armada.listaTiro:
-            armada.listaTiro.remove(disparo)
-        armada.conquista = True 
-
-
 def NuevoJuego():
     pygame.init()
     ventana = pygame.display.set_mode((ANCHO,ALTO))
@@ -59,78 +52,22 @@ def NuevoJuego():
                 if event.type == pygame.KEYDOWN:
                     if event.key == K_LEFT:
                         jugador.rect.left -= jugador.Velocidad
-                        
+                                
                     elif event.key == K_RIGHT:
                         jugador.rect.right += jugador.Velocidad
-                            
-                        
+                                
                     elif event.key == K_s:
                         x,y = jugador.rect.center
-                        if jugador.disparo == False:
-                            jugador.disparar(x,y)
-                        if jugador.disparo == True:
-                            jugador.disparo(x,y)
-                        
-        
+                        jugador.disparar(x,y)                       
         ventana.blit(imagenFondo,(0,0))
         jugador.dibujar(ventana)
         
-        for event in pygame.event.get():
-            if event.type == QUIT:
-                pygame.quit()
-                sys.exit()
+        jugador.colisionJ(LISTA_ENEMIGOS,ventana,Enemigo.jefe_enemigo)
+        Enemigo.jefe_enemigo.colisionBoss(LISTA_ENEMIGOS, tiempo,ventana,jugador, ALTO, ANCHO, textoDerrota)
         
-        if len(jugador.listaDisparo)>0:
-            for x in jugador.listaDisparo:
-                x.dibujar(ventana)
-                x.trayectoria()  
-                if x.rect.top<-10:
-                    jugador.listaDisparo.remove(x)
-                else:    
-                    for armada in LISTA_ENEMIGOS:
-                        if x.rect.colliderect(armada.rect):
-                            jugador.listaDisparo.remove(x)
-                            armada.colision +=1
-                            if armada.colision > 9:
-                                LISTA_ENEMIGOS.remove(armada)
-
-                                
-                            
-        if len(LISTA_ENEMIGOS)>0:
-            for armada in LISTA_ENEMIGOS:
-                armada.animacion(tiempo)
-                armada.mostrar(ventana)
-                if armada.rect.colliderect(jugador.rect): 
-                    jugador.destruccion()
-                    LISTA_ENEMIGOS.remove(armada)
-                    juego = False
-                    detenerEnemigo()
-                if armada.rect.top > ALTO-20:
-                    jugador.destruccion()
-                    jugador.Vida = False
-                    juego = False
-                    detenerEnemigo()
-                
-                if len(armada.listaTiro)>0:
-                    for x in armada.listaTiro:
-                        x.dibujar(ventana)
-                        x.trayectoria()
-                        if x.rect.colliderect(jugador.rect):
-                            jugador.destruccion()
-                            juego = False
-                            detenerEnemigo()
-                        
-                        if x.rect.top>900:
-                            armada.listaTiro.remove(x)
-                        else:
-                            for disparo in jugador.listaDisparo:
-                                if x.rect.colliderect(disparo.rect):
-                                    jugador.listaDisparo.remove(disparo)
-                                    armada.listaTiro.remove(x)
-    
-        if juego == False:
+        if jugador.Vida == False:
             ventana.blit(textoDerrota,(ANCHO/2,ALTO/5))
-
+            
         if len(LISTA_ENEMIGOS) == 0 and jugador.Vida == True:
             jugador.ganar()
             ventana.blit(textoVictoria,(75,300))
