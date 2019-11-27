@@ -99,7 +99,6 @@ class nave_enemiga(object):
             if armada.rect.colliderect(jugador.rect):
                 jugador.destruccion()
                 lista.remove(armada)
-                juego = False
                 armada.detenerEnemigo(lista)
             if armada.rect.top > altura-20:
                 jugador.destruccion()
@@ -122,7 +121,13 @@ class nave_enemiga(object):
                                 if x.rect.colliderect(disparo.rect):
                                     jugador.listaDisparo.remove(disparo)
                                     armada.listaTiro.remove(x)
-
+    
+    def detenerEnemigo(self,lista):
+            for armada in lista:
+                for disparo in armada.listaTiro:
+                    armada.listaTiro.remove(disparo)
+                armada.conquista = True 
+                
 class jefe_enemigo(nave_enemiga):
     def __init__(self,posx,posy, distancia, imagenUno, imagenDos):
         super(nave_enemiga, self)
@@ -175,11 +180,7 @@ class jefe_enemigo(nave_enemiga):
         self.listaTiro.append(miProyectil)
         self.sonidoDisparo.play()
         
-    def detenerEnemigo(self,lista):
-        for armada in lista:
-            for disparo in armada.listaTiro:
-                armada.listaTiro.remove(disparo)
-            armada.conquista = True 
+    
             
     
     

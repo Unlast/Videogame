@@ -24,32 +24,33 @@ class nave(pygame.sprite.Sprite):
         self.disparo = False
         self.nivel = False
         self.nivel2 = False
+ 
     def movimiento(self):
         if self.Vida == True:
             if self.rect.left <=0:
-                self.rect.left =0
-                
+                self.rect.left =0    
             elif self.rect.right >=360:
                 self.rect.right = 360
     
     def disparar(self,x,y):
-        miProyectil = Proyectil.Proyectil(x,y,'recursos/imagenes/tiro.bmp',True)
-        self.listaDisparo.append(miProyectil)
-        self.sonidoDisparo.play()
-   
+        if self.Vida == True:
+            miProyectil = Proyectil.Proyectil(x,y,'recursos/imagenes/tiro.bmp',True)
+            self.listaDisparo.append(miProyectil)
+            self.sonidoDisparo.play()
+       
     def destruccion(self):
         self.Vida = False
         self.velocidad = 0
         self.ImagenPersonaje = self.ImagenExplosion
         self.sonidoDestruccion.play()
-        
+        self.remove()
     def dibujar(self,superficie):
         superficie.blit(self.ImagenPersonaje,self.rect)
         
     def ganar(self):
         for x in self.listaDisparo:
-            self.listaDisparo.remove(x)
-            
+                x.rect.top = -10
+                
     def colision(self,lista,superficie,armada,fin):
         if len(self.listaDisparo)>0:
             for x in self.listaDisparo:
@@ -60,8 +61,8 @@ class nave(pygame.sprite.Sprite):
                 else:
                     for armada in lista:
                         if x.rect.colliderect(armada.rect):
-                            self.listaDisparo.remove(x)
                             armada.colision+=1
+                            x.rect.top = -10
                             if armada.colision > fin:
                                 lista.remove(armada)
     
