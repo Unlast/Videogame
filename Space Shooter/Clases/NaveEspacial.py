@@ -12,7 +12,7 @@ class nave(pygame.sprite.Sprite):
     def __init__(self):
         
         pygame.sprite.Sprite.__init__(self)
-        self.ImagenPersonaje = pygame.image.load('recursos/imagenes/nave001.bmp')
+        self.ImagenPersonaje = pygame.image.load('recursos/imagenes/001.gif')
         self.rect = self.ImagenPersonaje.get_rect()
         self.rect.centerx = ANCHO/2
         self.rect.centery = ALTO-20
