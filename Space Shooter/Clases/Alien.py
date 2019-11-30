@@ -8,7 +8,7 @@ ANCHO = 360
 ALTO = 740
 LISTA_ENEMIGOS=[]
 class nave_enemiga(object):
-    def __init__(self,posx,posy, distancia, imagenUno, imagenDos):
+    def __init__(self,posx,posy, distancia, imagenUno, imagenDos, lateral):
         pygame.sprite.Sprite.__init__(self)
 
         self.posx = posx
@@ -33,13 +33,14 @@ class nave_enemiga(object):
         self.derecha = True
         self.contador = 0
         self.maxDescenso = self.rect.top+40
+        self.maximo_lateral = lateral
         
         self.limiteDer= posx + distancia
         self.limiteIzq= posx - distancia
     	
         self.rangoDisparo = 1
         self.conquista = False 
-
+        
         self.sonidoDisparo = pygame.mixer.Sound('recursos/audio/disparo1.ogg')
         
     def mostrar(self, superficie):
@@ -59,7 +60,7 @@ class nave_enemiga(object):
                 self.posicionImagen +=1
     
     def movimientos(self):
-        if self.contador <3:
+        if self.contador <self.maximo_lateral:
             self.movimientoLateral()
         else:
             self.descenso()
@@ -129,7 +130,7 @@ class nave_enemiga(object):
                 armada.conquista = True 
                 
 class jefe_enemigo(nave_enemiga):
-    def __init__(self,posx,posy, distancia, imagenUno, imagenDos):
+    def __init__(self,posx,posy, distancia, imagenUno, imagenDos,lateral):
         super(nave_enemiga, self)
         
         self.imagenA = pygame.image.load(imagenUno)
@@ -155,6 +156,7 @@ class jefe_enemigo(nave_enemiga):
         self.limiteIzq= posx - distancia
         self.rangoDisparo = 1
         self.conquista = False 
+        self.maximo_lateral = lateral
 
     def mostrar(self, superficie):
         nave_enemiga.mostrar(self,superficie)
