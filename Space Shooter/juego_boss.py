@@ -15,6 +15,7 @@ NEGRO = (0, 0, 0)
 BLANCO = (255,255,255)
 fuente = pygame.font.Font("recursos/fuentes//monolight.ttf", 30)
 textoPausa = fuente.render("Pausa",75,(255,255,255))
+ventana = pygame.display.set_mode((ANCHO,ALTO))
 
 def pausa():
     pausado = True
@@ -28,7 +29,7 @@ def pausa():
                     pausado = False
                 elif event.key == pygame.K_q:
                     pygame.quit()
-                    sys.exit()
+                    exit()
         ventana.blit(textoPausa,(100,ALTO/5))
         pygame.display.update()
         
@@ -61,6 +62,7 @@ def pantalla_principal():
 
 def NuevoJuego():
     pygame.init()
+    pygame.mixer.init(44100, -16,2,2048)
     ventana = pygame.display.set_mode((ANCHO,ALTO))
     imagenFondo = pygame.image.load(os.path.join('recursos','imagenes','fondo.jpg'))
     Niveles.pantalla_juego(ventana, ANCHO, ALTO)
@@ -88,7 +90,7 @@ def NuevoJuego():
             jugador.mostrar_puntos(ventana)
             if event.type == pygame.QUIT:
                 pygame.quit()
-                sys.exit()
+                exit()
                 
             if juego == True:
                 if event.type == pygame.KEYDOWN:
@@ -121,20 +123,22 @@ def NuevoJuego():
 
         if jugador.Vida == False:
             ventana.blit(textoDerrota,(ANCHO/2,ALTO/5))
-        
+
         if len(LISTA_ENEMIGOS) == 0 and jugador.Vida == True and jugador.nivel == False:
             jugador.pasar_nivel2(LISTA_ENEMIGOS, ventana)    
        
         if len(LISTA_ENEMIGOS) == 0 and jugador.Vida == True and jugador.nivel == True:
             jugador.ganar()
             ventana.blit(textoVictoria,(100,ALTO/5))
+            time.sleep(3)
             pantalla_principal()
 
         pygame.display.update()
         
 def salir_del_programa():
     import sys
-    sys.exit(0)
+    pygame.quit()
+    exit()
 
 if __name__ == '__main__':
    pantalla_principal()
