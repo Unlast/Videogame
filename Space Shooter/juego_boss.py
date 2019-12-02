@@ -1,6 +1,5 @@
 import pygame,sys, os, time
 from pygame.locals import *
-sys.path.append("/NAC/Desktop/PalomNation/Clases") #Agregar la ubicacion donde tengan las carpetas
 from Clases import NaveEspacial
 from Clases import Alien as Enemigo
 from Clases import Proyectil
@@ -8,93 +7,32 @@ from Clases import Menu
 from Clases import Opcion
 from Clases import Cursor
 from Clases import Niveles
-
+pygame.init()
 ANCHO = 360
 ALTO = 740
 LISTA_ENEMIGOS = []
 NEGRO = (0, 0, 0)
 BLANCO = (255,255,255)
-def bajar_fps(reloj):
-    reloj = pygame.time.Clock()
-    reloj.tick(1)
+fuente = pygame.font.Font("recursos/fuentes//monolight.ttf", 30)
+textoPausa = fuente.render("Pausa",75,(255,255,255))
 
-        
-      
-def NuevoJuego():
-    pygame.init()
-    ventana = pygame.display.set_mode((ANCHO,ALTO))
-    imagenFondo = pygame.image.load(os.path.join('recursos','imagenes','fondo.jpg'))
-    Niveles.pantalla_juego(ventana, ANCHO, ALTO)
-    fuente = pygame.font.Font("recursos/fuentes//monolight.ttf", 30)
-    textoVictoria = fuente.render("¡Los eliminaste!",45,(120,100,40))
-    textoDerrota = fuente.render("Game Over",75,(254,0,227))
-    pygame.mixer.music.load('recursos/audio/menu.mp3')
-    pygame.mixer.music.play(4)
-    jugador = NaveEspacial.nave()
-    jugador.mostrar_puntos(ventana)
-    pygame.key.set_repeat(1)
-    reloj = pygame.time.Clock()
-    juego = True
-    ventana.fill(NEGRO)
-    Niveles.cargarEnemigosPiramideI(LISTA_ENEMIGOS)
-
-    while True:
-
-        #Mayor es el tick, mayor es la velocidad de cambio
-        reloj.tick(60)
-        tiempo = reloj
-        ventana.blit(imagenFondo,(0,0))
-        jugador.movimiento()
-        pygame.key.get_pressed()
+def pausa():
+    pausado = True
+    while pausado:
         for event in pygame.event.get():
-            jugador.mostrar_puntos(ventana)
             if event.type == pygame.QUIT:
                 pygame.quit()
-                sys.exit()
-                
-            if juego == True:
-                if event.type == pygame.KEYDOWN:
-                    if event.key == K_LEFT:
-                        jugador.rect.left -= jugador.Velocidad
-                                
-                    elif event.key == K_RIGHT:
-                        jugador.rect.right += jugador.Velocidad
-                
-                if event.type == pygame.KEYUP:
-                    if event.key == K_s:
-                        x,y = jugador.rect.center
-                        jugador.disparar(x,y)      
-                
-                if event.type == pygame.KEYUP:
-                    if event.key == K_z:
-                        jugador.destruccion_total(LISTA_ENEMIGOS)
-        
-        ventana.blit(imagenFondo,(0,0))
-        jugador.mostrar_puntos(ventana)
-
-        jugador.dibujar(ventana)
-        jugador.colision(LISTA_ENEMIGOS,ventana,Enemigo.nave_enemiga,0)
-        Enemigo.nave_enemiga.colision(LISTA_ENEMIGOS, tiempo,ventana,jugador, ALTO, ANCHO, textoDerrota)
-        jugador.colision(LISTA_ENEMIGOS,ventana,Enemigo.jefe_enemigo,4)
-
-        if jugador.Vida == False:
-            ventana.blit(textoDerrota,(ANCHO/2,ALTO/5))
-        
-        if len(LISTA_ENEMIGOS) == 0 and jugador.Vida == True and jugador.nivel == False:
-            bajar_fps(reloj)
-            jugador.pasar_nivel2(LISTA_ENEMIGOS, ventana)    
-       
-        if len(LISTA_ENEMIGOS) == 0 and jugador.Vida == True and jugador.nivel == True:
-            jugador.ganar()
-            ventana.blit(textoVictoria,(100,ALTO/5))
-
+                exit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_c:
+                    pausado = False
+                elif event.key == pygame.K_q:
+                    pygame.quit()
+                    sys.exit()
+        ventana.blit(textoPausa,(100,ALTO/5))
         pygame.display.update()
         
-def salir_del_programa():
-    import sys
-    sys.exit(0)
-
-if __name__ == '__main__':
+def pantalla_principal():
     ventana= pygame.display.set_mode((ANCHO, ALTO ))
     salir = False
     #Lista de opciones que aparecerán en el menú
@@ -120,4 +58,84 @@ if __name__ == '__main__':
         menu.imprimir(ventana)
         pygame.display.flip()
         pygame.time.delay(10)
+
+def NuevoJuego():
+    pygame.init()
+    ventana = pygame.display.set_mode((ANCHO,ALTO))
+    imagenFondo = pygame.image.load(os.path.join('recursos','imagenes','fondo.jpg'))
+    Niveles.pantalla_juego(ventana, ANCHO, ALTO)
+    textoVictoria = fuente.render("¡Los eliminaste!",45,(120,100,40))
+    textoDerrota = fuente.render("Game Over",75,(254,0,227))
+    pygame.mixer.music.load('recursos/audio/menu.mp3')
+    pygame.mixer.music.play(4)
+    jugador = NaveEspacial.nave()
+    jugador.mostrar_puntos(ventana)
+    pygame.key.set_repeat(1)
+    reloj = pygame.time.Clock()
+    juego = True
+    ventana.fill(NEGRO)
+    Niveles.cargarEnemigosLineal(LISTA_ENEMIGOS,1)
+    Niveles.cargarBossLineal(LISTA_ENEMIGOS,1)
+    while True:
+
+        #Mayor es el tick, mayor es la velocidad de cambio
+        reloj.tick(60)
+        tiempo = reloj
+        ventana.blit(imagenFondo,(0,0))
+        jugador.movimiento()
+        pygame.key.get_pressed()
+        for event in pygame.event.get():
+            jugador.mostrar_puntos(ventana)
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+                
+            if juego == True:
+                if event.type == pygame.KEYDOWN:
+                    if event.key == K_LEFT:
+                        jugador.rect.left -= jugador.Velocidad
+                                
+                    elif event.key == K_RIGHT:
+                        jugador.rect.right += jugador.Velocidad
+                    
+                    elif event.key == K_p:
+                        pausa()
+                if event.type == pygame.KEYUP:
+                    if event.key == K_s:
+                        x,y = jugador.rect.center
+                        jugador.disparar(x,y)      
+                
+                    elif event.key == K_z:
+                        jugador.destruccion_total(LISTA_ENEMIGOS)
+                        
+                    elif event.key == K_r:
+                        pantalla_principal()
+                    
+        ventana.blit(imagenFondo,(0,0))
+        jugador.mostrar_puntos(ventana)
+
+        jugador.dibujar(ventana)
+        jugador.colision(LISTA_ENEMIGOS,ventana,Enemigo.nave_enemiga,0)
+        Enemigo.nave_enemiga.colision(LISTA_ENEMIGOS, tiempo,ventana,jugador, ALTO, ANCHO, textoDerrota)
+        jugador.colision(LISTA_ENEMIGOS,ventana,Enemigo.jefe_enemigo,4)
+
+        if jugador.Vida == False:
+            ventana.blit(textoDerrota,(ANCHO/2,ALTO/5))
+        
+        if len(LISTA_ENEMIGOS) == 0 and jugador.Vida == True and jugador.nivel == False:
+            jugador.pasar_nivel2(LISTA_ENEMIGOS, ventana)    
+       
+        if len(LISTA_ENEMIGOS) == 0 and jugador.Vida == True and jugador.nivel == True:
+            jugador.ganar()
+            ventana.blit(textoVictoria,(100,ALTO/5))
+            pantalla_principal()
+
+        pygame.display.update()
+        
+def salir_del_programa():
+    import sys
+    sys.exit(0)
+
+if __name__ == '__main__':
+   pantalla_principal()
 
