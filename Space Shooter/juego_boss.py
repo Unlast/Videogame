@@ -1,5 +1,6 @@
-import pygame,sys, os, time
+import pygame,sys, os, time, sqlite3
 from pygame.locals import *
+sys.path.append("/NAC/Desktop/UNLa/Seminario-de-Lenguajes/Space-Shooter/Clases") #Agregar la ubicacion donde tengan las carpetas
 from Clases import NaveEspacial
 from Clases import Alien as Enemigo
 from Clases import Proyectil
@@ -7,6 +8,12 @@ from Clases import Menu
 from Clases import Opcion
 from Clases import Cursor
 from Clases import Niveles
+
+"""
+Se importan los módulos a utilizar, se agregan el módulo Clases propio del juego y las clases a utilizar
+Se inicia pygame, se define el alto y ancho de la pantalla, 2 colores, la fuente a utilizar
+el texto de pausa y se crea la pantalla.
+"""
 pygame.init()
 ANCHO = 360
 ALTO = 740
@@ -16,8 +23,18 @@ BLANCO = (255,255,255)
 fuente = pygame.font.Font("recursos/fuentes//monolight.ttf", 30)
 textoPausa = fuente.render("Pausa",75,(255,255,255))
 ventana = pygame.display.set_mode((ANCHO,ALTO))
+def conectar():
+    """
+    Conectar: coneecta a la base de datos donde se guardan los 5 puntajes mas altos
+    """
+    conexion = sqlite3.connect("BdSpaceShoot.db")
+
 
 def pausa():
+    """
+    Pausa: Si se presiona la letra P se pausa el juego, C para continuar, Q para salir
+    """
+
     pausado = True
     while pausado:
         for event in pygame.event.get():
@@ -34,6 +51,9 @@ def pausa():
         pygame.display.update()
         
 def pantalla_principal():
+    """
+    Pantalla Principal: muestra la pantalla de inicio con las opciones a seleccionar
+    """
     ventana= pygame.display.set_mode((ANCHO, ALTO ))
     salir = False
     #Lista de opciones que aparecerán en el menú
@@ -41,8 +61,7 @@ def pantalla_principal():
         ("Jugar", NuevoJuego),
         ("Salir", salir_del_programa)
         ]
-    pygame.init()
-    pygame.font.init()
+   
 
     jugador= NaveEspacial.nave()
     pygame.display.set_caption("Space Shoot")
@@ -61,8 +80,13 @@ def pantalla_principal():
         pygame.time.delay(10)
 
 def NuevoJuego():
-    pygame.init()
-    pygame.mixer.init(44100, -16,2,2048)
+    """
+    NuevoJuego: contiene el bucle While donde se ejecuta la lógica del juego, música textos a mostrar en caso de Victoria o Derrota
+    la instancia de enemigos. Dentro del bucle se pone los FPS y controles. La cantidad
+    de colisiones contra los enemigos en el caso que se necesite. Se evalua las condiciones de derrota
+    pasar de nivel y ganar el juego.
+    """
+    conectar()
     ventana = pygame.display.set_mode((ANCHO,ALTO))
     imagenFondo = pygame.image.load(os.path.join('recursos','imagenes','fondo.jpg'))
     Niveles.pantalla_juego(ventana, ANCHO, ALTO)
@@ -76,8 +100,9 @@ def NuevoJuego():
     reloj = pygame.time.Clock()
     juego = True
     ventana.fill(NEGRO)
-    Niveles.cargarEnemigosLineal(LISTA_ENEMIGOS,1)
-    Niveles.cargarBossLineal(LISTA_ENEMIGOS,1)
+    Niveles.cargarBossPiramideI(LISTA_ENEMIGOS)
+    Niveles.cargarEnemigosPiramide(LISTA_ENEMIGOS)
+    
     while True:
 
         #Mayor es el tick, mayor es la velocidad de cambio
@@ -119,11 +144,12 @@ def NuevoJuego():
         jugador.dibujar(ventana)
         jugador.colision(LISTA_ENEMIGOS,ventana,Enemigo.nave_enemiga,0)
         Enemigo.nave_enemiga.colision(LISTA_ENEMIGOS, tiempo,ventana,jugador, ALTO, ANCHO, textoDerrota)
-        jugador.colision(LISTA_ENEMIGOS,ventana,Enemigo.jefe_enemigo,4)
+        jugador.colision(LISTA_ENEMIGOS,ventana,Enemigo.jefe_enemigo,2)
 
         if jugador.Vida == False:
             ventana.blit(textoDerrota,(ANCHO/2,ALTO/5))
-
+            juego = False
+            
         if len(LISTA_ENEMIGOS) == 0 and jugador.Vida == True and jugador.nivel == False:
             jugador.pasar_nivel2(LISTA_ENEMIGOS, ventana)    
        
