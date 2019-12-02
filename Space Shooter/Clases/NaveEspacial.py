@@ -25,8 +25,6 @@ class nave(pygame.sprite.Sprite):
         self.victoria = False
         self.disparo = False
         self.nivel = False
-        self.nivel2 = False
-        self.nivel3 = False
         self.puntuacion = 0
  
     def movimiento(self):
@@ -49,6 +47,7 @@ class nave(pygame.sprite.Sprite):
         self.ImagenPersonaje = self.ImagenExplosion
         self.sonidoDestruccion.play()
         self.remove()
+        
     def dibujar(self,superficie):
         superficie.blit(self.ImagenPersonaje,self.rect)
         
