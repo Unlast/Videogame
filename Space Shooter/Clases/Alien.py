@@ -1,5 +1,4 @@
-import pygame,os
-from pygame.locals import *
+import pygame
 from Clases import Proyectil
 from random import randint
 from Clases import NaveEspacial
@@ -7,7 +6,37 @@ juego = True
 ANCHO = 360
 ALTO = 740
 LISTA_ENEMIGOS=[]
+
 class nave_enemiga(object):
+    """
+    nave_enemiga clase madre, jefe_enemigo hereda de la madre.
+    
+    Posiciones sobre el ejex y el ejey
+    
+    Imagenes que luego se pondrán en la lista, una posición para recorrer la lista
+    
+    Un atributo que representa a la lista con la posición inicial
+    
+    Lista tiro para guardar los proyectiles, velocidad tiro el desplazamiento en pantalla
+    velocidad controlar el movimiento
+    
+    Colision detecta la cantidad de impactos, útil para hacer más dificil de destruir
+    
+    Cambio de imagen = 1 para que las imagenes cambien a medidad que transcurre el tiempo
+    
+    Contador para verificar cuantas veces toca los limites horizontales, booleano 
+    para limitar la cantidad de veces, maxDescenso es lo que tiene que descender
+    cada vez que el booleano sea falso
+    Max_lateral para controlar la cantidad de veces que toca los limites horizontales
+    
+    Limites para que no salga de pantalla.
+    
+    Rango disparo para manejar cada cuanto se realiza un disparo (Explicado mejor en el metodo)
+    
+    Conquista para verificar si el personaje fue destruido
+    
+    Un sonido para los disparos
+    """
     def __init__(self,posx,posy, distancia, imagenUno, imagenDos, lateral):
         pygame.sprite.Sprite.__init__(self)
 
@@ -16,12 +45,11 @@ class nave_enemiga(object):
         
         self.enemigo_imagenA  = pygame.image.load(imagenUno)
         self.enemigo_imagenB  = pygame.image.load(imagenDos)
-
         self.listaImagenes = [self.enemigo_imagenA, self.enemigo_imagenB]
         self.posicionImagen = 0
-    
         self.imagenEnemigo = self.listaImagenes[self.posicionImagen]
         self.rect = self.imagenEnemigo.get_rect()
+        
         self.listaTiro = []
         self.velocidadTiro = 2
         self.velocidad = 1
@@ -44,11 +72,17 @@ class nave_enemiga(object):
         self.sonidoDisparo = pygame.mixer.Sound('recursos/audio/disparo1.ogg')
         
     def mostrar(self, superficie):
+        """
+        Mostrar: dibuja al/los enemigo/s sobre la pantalla
+        """
         self.imagenEnemigo = self.listaImagenes[self.posicionImagen]
         superficie.blit(self.imagenEnemigo, self.rect)
         
     def animacion(self,tiempo):
-        
+        """
+        Animacion: si el jugador no fue destruido se llaman a los metodos de mover y atacar
+        ademas se cambia la imagen del enemigo
+        """
         if self.conquista == False:
             self.movimientos()
 
@@ -60,6 +94,11 @@ class nave_enemiga(object):
                 self.posicionImagen +=1
     
     def movimientos(self):
+        """
+        Movimientos: Si se puede mover de costado, continuará haciendolo de lo contrario
+        se invoca al método descender
+        """
+
         if self.contador <self.maximo_lateral:
             self.movimientoLateral()
         else:
@@ -73,6 +112,10 @@ class nave_enemiga(object):
             self.rect.top +=20
    
     def movimientoLateral(self):
+        """
+        Movimiento lateral = Si derecha es verdadero se mueve en esa direccion, de lo contrario
+        suma uno al contador y se mueve en direccion contraria
+        """
         if self.derecha == True:
             self.rect.left = self.rect.left+ self.velocidad
             if self.rect.left > self.limiteDer:
@@ -84,7 +127,11 @@ class nave_enemiga(object):
                 self.derecha = True
                 
     def ataque(self):
-        if (randint(0,100)<self.rangoDisparo):
+        """
+        Ataque: A través de un numero aleatorio se invoca a la funcion disparo, mientras más bajo sea
+        el numero máximo del randint más disparos se realizaran
+        """
+        if (randint(0,200)<self.rangoDisparo):
             self.disparo()
 
     def disparo(self):
@@ -94,6 +141,9 @@ class nave_enemiga(object):
         self.sonidoDisparo.play()
  
     def colision(lista, tiempo, superficie, jugador, altura, ancho, texto):
+        """
+        Colision: Controla los impactos entre el jugador y el enemigo
+        """
         for armada in lista:
             armada.animacion(tiempo)
             armada.mostrar(superficie)
@@ -124,6 +174,10 @@ class nave_enemiga(object):
                                     armada.listaTiro.remove(x)
     
     def detenerEnemigo(self,lista):
+            """
+            DetenerEnemigo: Si el jugador es impactado por un proyectil los enemigos se dejan de mover
+            y se eliminan los disparos.
+            """
             for armada in lista:
                 for disparo in armada.listaTiro:
                     armada.listaTiro.remove(disparo)
