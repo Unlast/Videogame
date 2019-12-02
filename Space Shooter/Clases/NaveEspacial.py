@@ -6,6 +6,7 @@ from Clases import Niveles
 ANCHO = 360
 ALTO = 740
 BLANCO = (255,255,255)
+pygame.mixer.init(44100, -16,2,2048)
 
 class nave(pygame.sprite.Sprite):
     
@@ -25,6 +26,8 @@ class nave(pygame.sprite.Sprite):
         self.victoria = False
         self.disparo = False
         self.nivel = False
+        self.nivel2 = False
+
         self.puntuacion = 0
  
     def movimiento(self):
@@ -85,6 +88,14 @@ class nave(pygame.sprite.Sprite):
         Niveles.pantalla_carga(ventana, ANCHO, ALTO)
         self.ganar()
         Niveles.cargarBossPiramideI(lista)
+        Niveles.cargarEnemigosPiramide(lista,3)
+        
+        
+    def pasar_nivel3(self, lista, ventana):
+        self.nivel = True
+        Niveles.pantalla_carga(ventana, ANCHO, ALTO)
+        self.ganar()
+        Niveles.cargarBossLineal(lista,3)
         
     def destruccion_total(self,lista):
        for x in lista:

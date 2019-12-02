@@ -23,7 +23,7 @@ class nave_enemiga(object):
         self.imagenEnemigo = self.listaImagenes[self.posicionImagen]
         self.rect = self.imagenEnemigo.get_rect()
         self.listaTiro = []
-        self.velocidadTiro = 450
+        self.velocidadTiro = 2
         self.velocidad = 1
         self.rect.top = posy
         self.rect.left = posx
@@ -84,7 +84,7 @@ class nave_enemiga(object):
                 self.derecha = True
                 
     def ataque(self):
-        if (randint(0,600)<self.rangoDisparo):
+        if (randint(0,100)<self.rangoDisparo):
             self.disparo()
 
     def disparo(self):

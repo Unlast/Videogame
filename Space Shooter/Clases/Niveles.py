@@ -9,21 +9,21 @@ def cargarEnemigosPiramide(lista,lateral):
        #el tercer espacio es la distancia que recorre sobre el eje x
         posx = 45
         for x in range(1,6):
-            armada = Enemigo.nave_enemiga(posx,150,40, 'recursos/imagenes/enemigo001.bmp', 'recursos/imagenes/enemigo002.bmp',lateral) #Segundo valor distancia en y
+            armada = Enemigo.nave_enemiga(posx,200,40, 'recursos/imagenes/enemigo001.bmp', 'recursos/imagenes/enemigo002.bmp',lateral) #Segundo valor distancia en y
             lista.append(armada)
             posx = posx + 50 
        
         
         posx = 90
         for x in range(1,4):
-            armada = Enemigo.nave_enemiga(posx,100,80, 'recursos/imagenes/enemigo001.bmp', 'recursos/imagenes/enemigo002.bmp',lateral) #Segundo valor distancia en y
+            armada = Enemigo.nave_enemiga(posx,250,80, 'recursos/imagenes/enemigo001.bmp', 'recursos/imagenes/enemigo002.bmp',lateral) #Segundo valor distancia en y
             lista.append(armada)
             posx = posx + 75
        
         
         posx = 180 #Desplazamiento en x
         for x in range(1,2):
-            armada = Enemigo.nave_enemiga(posx,50,120, 'recursos/imagenes/enemigo001.bmp', 'recursos/imagenes/enemigo002.bmp',lateral) #Segundo valor distancia en y
+            armada = Enemigo.nave_enemiga(posx,300,120, 'recursos/imagenes/enemigo001.bmp', 'recursos/imagenes/enemigo002.bmp',lateral) #Segundo valor distancia en y
             lista.append(armada)
             posx = posx + 50
 
@@ -34,21 +34,21 @@ def cargarEnemigosPiramideI(lista):
        #el tercer espacio es la distancia que recorre sobre el eje x
         posx = 180
         for x in range(1,2):
-            armada = Enemigo.nave_enemiga(posx,150,120, 'recursos/imagenes/enemigo001.bmp', 'recursos/imagenes/enemigo002.bmp',3) #Segundo valor distancia en y
+            armada = Enemigo.nave_enemiga(posx,200,120, 'recursos/imagenes/enemigo001.bmp', 'recursos/imagenes/enemigo002.bmp',3) #Segundo valor distancia en y
             lista.append(armada)
             posx = posx + 50 
        
         
         posx = 90
         for x in range(1,4):
-            armada = Enemigo.nave_enemiga(posx,100,80, 'recursos/imagenes/enemigo001.bmp', 'recursos/imagenes/enemigo002.bmp',5) #Segundo valor distancia en y
+            armada = Enemigo.nave_enemiga(posx,250,80, 'recursos/imagenes/enemigo001.bmp', 'recursos/imagenes/enemigo002.bmp',5) #Segundo valor distancia en y
             lista.append(armada)
             posx = posx + 75
        
         
         posx = 90 #Desplazamiento en x
         for x in range(1,6):
-            armada = Enemigo.nave_enemiga(posx,50,40, 'recursos/imagenes/enemigo001.bmp', 'recursos/imagenes/enemigo002.bmp',10) #Segundo valor distancia en y
+            armada = Enemigo.nave_enemiga(posx,300,40, 'recursos/imagenes/enemigo001.bmp', 'recursos/imagenes/enemigo002.bmp',10) #Segundo valor distancia en y
             lista.append(armada)
             posx = posx + 50      
         
