@@ -26,14 +26,14 @@ class nave(pygame.sprite.Sprite):
     def __init__(self):
         
         pygame.sprite.Sprite.__init__(self)
-        self.ImagenPersonaje = pygame.image.load('recursos/imagenes/001.gif')
+        self.ImagenPersonaje = pygame.image.load('recursos/imagenes/001.gif').convert_alpha()
         self.rect = self.ImagenPersonaje.get_rect()
         self.rect.centerx = ANCHO/2
         self.rect.centery = ALTO-20
         self.listaDisparo = []
         self.Vida = True
         self.Velocidad = 2
-        self.ImagenExplosion = pygame.image.load('recursos/imagenes/explosion.bmp')
+        self.ImagenExplosion = pygame.image.load('recursos/imagenes/explosion.bmp').convert_alpha()
         self.sonidoDisparo = pygame.mixer.Sound('recursos/audio/disparo2.ogg')
         self.sonidoDestruccion = pygame.mixer.Sound('recursos/audio/explosion1.ogg')
         self.victoria = False
@@ -130,8 +130,8 @@ class nave(pygame.sprite.Sprite):
         self.nivel = True
         Niveles.pantalla_carga(ventana, ANCHO, ALTO)
         self.ganar()
-        Niveles.cargarBossLineal(lista,1)
-        Niveles.cargarEnemigosLineal(lista,1)
+        Niveles.cargarBossLineal(lista,2)
+        Niveles.cargarEnemigosLineal(lista,2)
     
         
         
