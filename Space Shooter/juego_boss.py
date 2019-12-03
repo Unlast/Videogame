@@ -3,26 +3,24 @@ from pygame.locals import *
 sys.path.append("/NAC/Desktop/UNLa/Seminario-de-Lenguajes/Space-Shooter/Clases") #Agregar la ubicacion donde tengan las carpetas
 from Clases import NaveEspacial
 from Clases import Alien as Enemigo
-from Clases import Proyectil
 from Clases import Menu
-from Clases import Opcion
-from Clases import Cursor
 from Clases import Niveles
-
+from Clases import BD
 """
 Se importan los módulos a utilizar, se agregan el módulo Clases propio del juego y las clases a utilizar
 Se inicia pygame, se define el alto y ancho de la pantalla, 2 colores, la fuente a utilizar
 el texto de pausa y se crea la pantalla.
 """
-pygame.init()
+pygame.init()    
 ANCHO = 360
 ALTO = 740
 LISTA_ENEMIGOS = []
 NEGRO = (0, 0, 0)
 BLANCO = (255,255,255)
 fuente = pygame.font.Font("recursos/fuentes//monolight.ttf", 30)
-textoPausa = fuente.render("Pausa",75,(255,255,255))
+textoPausa = fuente.render("C continua, Q salir",50,(255,255,255))
 ventana = pygame.display.set_mode((ANCHO,ALTO))
+
 def conectar():
     """
     Conectar: coneecta a la base de datos donde se guardan los 5 puntajes mas altos
@@ -47,7 +45,7 @@ def pausa():
                 elif event.key == pygame.K_q:
                     pygame.quit()
                     exit()
-        ventana.blit(textoPausa,(100,ALTO/5))
+        ventana.blit(textoPausa,(50,ALTO/5))
         pygame.display.update()
         
 def pantalla_principal():
@@ -90,8 +88,8 @@ def NuevoJuego():
     ventana = pygame.display.set_mode((ANCHO,ALTO))
     imagenFondo = pygame.image.load(os.path.join('recursos','imagenes','fondo.jpg'))
     Niveles.pantalla_juego(ventana, ANCHO, ALTO)
-    textoVictoria = fuente.render("¡Los eliminaste!",45,(120,100,40))
-    textoDerrota = fuente.render("Game Over",75,(254,0,227))
+    textoVictoria = fuente.render("¡Los eliminaste!",45,(255,255,255))
+    textoDerrota = fuente.render("A casa",75,(254,0,227))
     pygame.mixer.music.load('recursos/audio/menu.mp3')
     pygame.mixer.music.play(4)
     jugador = NaveEspacial.nave()
@@ -102,7 +100,8 @@ def NuevoJuego():
     ventana.fill(NEGRO)
     Niveles.cargarBossPiramideI(LISTA_ENEMIGOS)
     Niveles.cargarEnemigosPiramide(LISTA_ENEMIGOS)
-    
+    mostrarDatos = False
+    contadorDatos = 0
     while True:
 
         #Mayor es el tick, mayor es la velocidad de cambio
@@ -134,10 +133,23 @@ def NuevoJuego():
                 
                     elif event.key == K_z:
                         jugador.destruccion_total(LISTA_ENEMIGOS)
-                        
+                       
+
                     elif event.key == K_r:
+                        for x in range(1,6):
+                            jugador.destruccion_total(LISTA_ENEMIGOS)
                         pantalla_principal()
-                    
+                        
+                    elif event.key == K_v:
+                        pygame.mixer.music.stop()
+                        pygame.mixer.music.load('recursos/audio/marcha.mp3')
+                        pygame.mixer.music.play(4)
+
+                    elif event.key == K_b:
+                        pygame.mixer.music.stop()
+                        pygame.mixer.music.load('recursos/audio/menu.mp3')
+                        pygame.mixer.music.play(4)
+    
         ventana.blit(imagenFondo,(0,0))
         jugador.mostrar_puntos(ventana)
 
@@ -147,20 +159,28 @@ def NuevoJuego():
         jugador.colision(LISTA_ENEMIGOS,ventana,Enemigo.jefe_enemigo,2)
 
         if jugador.Vida == False:
-            ventana.blit(textoDerrota,(ANCHO/2,ALTO/5))
+            ventana.blit(textoDerrota,(110,ALTO/2))
             juego = False
+            for x in range(1,6):
+                jugador.destruccion_total(LISTA_ENEMIGOS)
             
         if len(LISTA_ENEMIGOS) == 0 and jugador.Vida == True and jugador.nivel == False:
             jugador.pasar_nivel2(LISTA_ENEMIGOS, ventana)    
        
         if len(LISTA_ENEMIGOS) == 0 and jugador.Vida == True and jugador.nivel == True:
             jugador.ganar()
-            ventana.blit(textoVictoria,(100,ALTO/5))
-            time.sleep(3)
-            pantalla_principal()
-
-        pygame.display.update()
+            juego = False
+            Niveles.pantalla_carga(ventana,ANCHO,ALTO)
+            ventana.blit(textoVictoria,(67,ALTO/2))
+            if contadorDatos == 0:
+                BD.agregar(jugador.puntuacion)
+                BD.ordenar()
+                contadorDatos +=1
+             
         
+                
+        pygame.display.update()
+
 def salir_del_programa():
     import sys
     pygame.quit()
